@@ -355,7 +355,6 @@ measure_latency:
 	movq	%r13, %rsi
 	xorl	%eax, %eax
 	movq	%rbx, %rdx
-	call	__printf_chk@PLT
 	movq	%rbx, 24(%rsp)
 	movl	$1000, %eax
 	movapd	.LC7(%rip), %xmm0
@@ -572,7 +571,6 @@ measure_reciprocal_throughput:
 	movq	%r14, %rsi
 	xorl	%eax, %eax
 	movq	%rbx, %rdx
-	call	__printf_chk@PLT
 	movq	%rbx, 24(%rsp)
 	movl	$1000, %eax
 .L42:
