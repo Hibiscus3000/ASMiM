@@ -1,13 +1,5 @@
 	.file	"main.c"
 	.text
-	.globl	n
-	.section	.rodata
-	.align 4
-	.type	n, @object
-	.size	n, 4
-n:
-	.long	9502720
-	.text
 	.globl	swap
 	.type	swap, @function
 swap:
@@ -51,16 +43,8 @@ prepare_random_access_array:
 	.cfi_def_cfa_register 6
 	subq	$32, %rsp
 	movq	%rdi, -24(%rbp)
-	call	rand@PLT
-	movl	$9502720, %edx
-	leal	-2(%rdx), %ecx
-	cltd
-	idivl	%ecx
-	movl	%edx, %eax
-	leal	1(%rax), %edx
-	movq	-24(%rbp), %rax
-	movl	%edx, (%rax)
-	movl	$1, -12(%rbp)
+	movl	%esi, -28(%rbp)
+	movl	$0, -12(%rbp)
 	jmp	.L3
 .L4:
 	movl	-12(%rbp), %eax
@@ -72,33 +56,16 @@ prepare_random_access_array:
 	movl	%eax, (%rdx)
 	addl	$1, -12(%rbp)
 .L3:
-	movl	$9502720, %eax
-	subl	$1, %eax
-	cmpl	%eax, -12(%rbp)
+	movl	-12(%rbp), %eax
+	cmpl	-28(%rbp), %eax
 	jl	.L4
-	movl	$9502720, %edx
-	movq	-24(%rbp), %rax
-	movl	(%rax), %eax
-	cltq
-	leaq	0(,%rax,4), %rcx
-	movq	-24(%rbp), %rax
-	addq	%rcx, %rax
-	subl	$1, %edx
-	movl	%edx, (%rax)
-	movl	$9502720, %eax
-	cltq
-	salq	$2, %rax
-	leaq	-4(%rax), %rdx
-	movq	-24(%rbp), %rax
-	addq	%rdx, %rax
-	movl	$0, (%rax)
-	movl	$1, -8(%rbp)
+	movl	$0, -8(%rbp)
 	jmp	.L5
 .L6:
 	call	rand@PLT
-	movl	$9502720, %edx
+	movl	-28(%rbp), %edx
 	subl	-8(%rbp), %edx
-	leal	-2(%rdx), %ecx
+	leal	-1(%rdx), %ecx
 	cltd
 	idivl	%ecx
 	movl	-8(%rbp), %eax
@@ -120,8 +87,8 @@ prepare_random_access_array:
 	call	swap
 	addl	$1, -8(%rbp)
 .L5:
-	movl	$9502720, %eax
-	subl	$2, %eax
+	movl	-28(%rbp), %eax
+	subl	$1, %eax
 	cmpl	%eax, -8(%rbp)
 	jl	.L6
 	nop
@@ -144,7 +111,7 @@ get_ticks:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 #APP
-# 37 "main.c" 1
+# 33 "main.c" 1
 	rdtscp
 
 # 0 "" 2
@@ -166,8 +133,19 @@ get_ticks:
 	.section	.rodata
 	.align 8
 .LC0:
-	.string	"Unable to allocate memory for random access array"
+	.string	"Expected 2 arguments:\n\tarray size\n\t.csv file, where to place results\n"
 .LC1:
+	.string	"Invalid array size\n"
+.LC2:
+	.string	"open()"
+	.align 8
+.LC3:
+	.string	"Unable to allocate memory for random access array"
+.LC4:
+	.string	"time = %lld "
+.LC5:
+	.string	"%lld;"
+.LC6:
 	.string	"average ticks: %lld\n"
 	.text
 	.globl	main
@@ -181,43 +159,97 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$32, %rsp
-	movl	$0, %edi
-	call	time@PLT
-	movl	%eax, %edi
-	call	srand@PLT
-	movl	$9502720, %eax
-	cltq
-	salq	$2, %rax
-	movq	%rax, %rdi
-	call	malloc@PLT
-	movq	%rax, -24(%rbp)
-	cmpq	$0, -24(%rbp)
-	jne	.L10
+	subq	$352, %rsp
+	movl	%edi, -340(%rbp)
+	movq	%rsi, -352(%rbp)
+	movq	%fs:40, %rax
+	movq	%rax, -8(%rbp)
+	xorl	%eax, %eax
+	cmpl	$3, -340(%rbp)
+	je	.L10
 	movq	stderr(%rip), %rax
 	movq	%rax, %rcx
-	movl	$49, %edx
+	movl	$69, %edx
 	movl	$1, %esi
 	leaq	.LC0(%rip), %rax
 	movq	%rax, %rdi
 	call	fwrite@PLT
 	movl	$1, %eax
-	jmp	.L11
+	jmp	.L17
 .L10:
-	movq	-24(%rbp), %rax
+	movq	-352(%rbp), %rax
+	addq	$8, %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	call	atoi@PLT
+	movl	%eax, -320(%rbp)
+	cmpl	$0, -320(%rbp)
+	jg	.L12
+	movq	stderr(%rip), %rax
+	movq	%rax, %rcx
+	movl	$19, %edx
+	movl	$1, %esi
+	leaq	.LC1(%rip), %rax
+	movq	%rax, %rdi
+	call	fwrite@PLT
+	movl	$2, %eax
+	jmp	.L17
+.L12:
+	movq	-352(%rbp), %rax
+	addq	$16, %rax
+	movq	(%rax), %rax
+	movl	$448, %edx
+	movl	$1090, %esi
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	open@PLT
+	movl	%eax, -316(%rbp)
+	cmpl	$-1, -316(%rbp)
+	jne	.L13
+	leaq	.LC2(%rip), %rax
+	movq	%rax, %rdi
+	call	perror@PLT
+	movl	$3, %eax
+	jmp	.L17
+.L13:
+	movl	$0, %edi
+	call	time@PLT
+	movl	%eax, %edi
+	call	srand@PLT
+	movl	-320(%rbp), %eax
+	cltq
+	salq	$2, %rax
+	movq	%rax, %rdi
+	call	malloc@PLT
+	movq	%rax, -312(%rbp)
+	cmpq	$0, -312(%rbp)
+	jne	.L14
+	movq	stderr(%rip), %rax
+	movq	%rax, %rcx
+	movl	$49, %edx
+	movl	$1, %esi
+	leaq	.LC3(%rip), %rax
+	movq	%rax, %rdi
+	call	fwrite@PLT
+	movl	$1, %eax
+	jmp	.L17
+.L14:
+	movl	-320(%rbp), %edx
+	movq	-312(%rbp), %rax
+	movl	%edx, %esi
 	movq	%rax, %rdi
 	call	prepare_random_access_array
-	movl	$0, -32(%rbp)
+	movl	$0, -328(%rbp)
 	movl	$0, %eax
 	call	get_ticks
-	movq	%rax, -16(%rbp)
-	movl	$0, -28(%rbp)
-	jmp	.L12
-.L13:
-	movl	-32(%rbp), %eax
+	movq	%rax, -304(%rbp)
+	movl	$0, -324(%rbp)
+	jmp	.L15
+.L16:
+	movl	-328(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
-	movq	-24(%rbp), %rax
+	movq	-312(%rbp), %rax
 	addq	%rdx, %rax
 	movl	(%rax), %eax
-	movl	%eax, -32(%rbp)
+	movl	%eax, -328(%rbp)
