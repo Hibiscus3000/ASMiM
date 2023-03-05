@@ -4,7 +4,7 @@ assembly_file=main_assembly.s
 csv_file=table.csv
 executable_file=./main_assembly
 n=$((10240 * (128 + 512 + 3072) / 4))
-attempts=$((2))
+attempts=$((5))
 
 init=$((0))
 finish=$((300))
@@ -41,12 +41,14 @@ test() {
             $executable_file $n $csv_file
         done
     done
+    printf "\n" >> $csv_file
 }
 
 for ((i = $init; i < $finish; i++))
 do
     printf "$i;" >> $csv_file
 done
-test 2 "$(cat start_reg.s)" "" "$(cat finish_reg.s)" 0
-printf "\n" >> $csv_file
-test 2 "$(cat start2_reg.s)" "$(cat middle2_reg.s)" "$(cat finish2_reg.s)" 1
+test 1 "$(cat start_reg.s)" "" "$(cat finish_reg.s)" 0
+test 2 "$(cat start_reg_no_arr.s)" "" "$(cat finish_reg.s)" 0
+test 3 "$(cat start2_reg.s)" "$(cat middle2_reg.s)" "$(cat finish2_reg.s)" 1
+test 4 "$(cat start_reg_no_arr.s)" "" "$(cat finish_reg.s)" 1
