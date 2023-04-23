@@ -72,13 +72,9 @@ unsigned long long rd(tested *array, long long number_of_elements, void *param)
     if (check_code(posix_memalign(&arr, sizeof(tested), 4 * sizeof(tested)), "posix_memalign()"))
         return -1;
     double *double_array = (double *)arr;
-    double a;
     unsigned long long startt = __rdtscp(&AUX);
     for (long long i = 0; i < number_of_elements; ++i)
-    {
         _mm256_store_pd(double_array, array[i]);
-        a += double_array[2];
-    }
     unsigned long long endt = __rdtscp(&AUX);
     return endt - startt;
 }
@@ -86,10 +82,15 @@ unsigned long long rd(tested *array, long long number_of_elements, void *param)
 unsigned long long wr(tested *array, long long number_of_elements, void *param)
 {
     unsigned int AUX;
+    void *arr;
+    if (check_code(posix_memalign(&arr, sizeof(tested), 4 * sizeof(tested)), "posix_memalign()"))
+        return -1;
+    double *double_array = (double *)arr;
     char to_write_value = (char)param;
+    double_array[0] = double_array[1] = double_array[2] = double_array[3] = to_write_value;
     unsigned long long startt = __rdtscp(&AUX);
     for (long long i = 0; i < number_of_elements; ++i)
-        array[i] = _mm256_set1_pd(to_write_value);
+        array[i] = _mm256_load_pd(double_array);
     unsigned long long endt = __rdtscp(&AUX);
     return endt - startt;
 }
@@ -174,7 +175,7 @@ void test(long number_of_threads, long number_of_cpus, long number_of_virtual_th
         // write results to file
         for (long i = 0; i < number_of_threads; ++i)
         {
-            t_bandwidth = (double)array_size_per_thread * FREQ / (thread_datas[i].ticks * (1 << 27));
+            t_bandwidth = (double)array_size_per_thread * FREQ / (thread_datas[i].ticks * (1 << 30));
             printf("%ld: %s %.5f GBps\n", i, operations_name[k], t_bandwidth);
             write_to_file(bandwidth, results_table_fd);
             bandwidth += t_bandwidth;

@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <x86intrin.h>
 
+#include <sys/time.h>
+
 typedef __m256d tested;
 
 enum MEMORY
@@ -92,6 +94,7 @@ unsigned long long cp(tested *array, long long number_of_elements, void *param)
 {
     unsigned int AUX;
     tested *new_array = get_array(number_of_elements, (memory_alloc)param);
+
     unsigned long long startt = __rdtscp(&AUX);
     for (long long i = 0; i < number_of_elements; ++i)
         new_array[i] = array[i];
@@ -168,7 +171,7 @@ void test(long number_of_threads, long number_of_cpus, long number_of_virtual_th
         // write results to file
         for (long i = 0; i < number_of_threads; ++i)
         {
-            t_bandwidth = (double)array_size_per_thread * FREQ / (thread_datas[i].ticks * (1 << 27));
+            t_bandwidth = (double)array_size_per_thread * FREQ / (thread_datas[i].ticks * (1 << 30));
             printf("%ld: %s %.5f GBps\n", i, operations_name[k], t_bandwidth);
             write_to_file(bandwidth, results_table_fd);
             bandwidth += t_bandwidth;
