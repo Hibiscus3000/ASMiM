@@ -72,9 +72,13 @@ unsigned long long rd(tested *array, long long number_of_elements, void *param)
     if (check_code(posix_memalign(&arr, sizeof(tested), 4 * sizeof(tested)), "posix_memalign()"))
         return -1;
     double *double_array = (double *)arr;
+    double a = 1.5;
     unsigned long long startt = __rdtscp(&AUX);
     for (long long i = 0; i < number_of_elements; ++i)
+    {
         _mm256_store_pd(double_array, array[i]);
+        a += double_array[2];
+    }
     unsigned long long endt = __rdtscp(&AUX);
     return endt - startt;
 }
