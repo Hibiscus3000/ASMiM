@@ -107,6 +107,7 @@ unsigned long long cp(tested *array, long long number_of_elements, void *param)
     for (long long i = 0; i < number_of_elements; ++i)
         new_array[i] = array[i];
     unsigned long long endt = __rdtscp(&AUX);
+    free(new_array);
     return endt - startt;
 }
 
@@ -181,7 +182,6 @@ void test(long number_of_threads, long number_of_cpus, long number_of_virtual_th
         {
             t_bandwidth = (double)array_size_per_thread * FREQ / (thread_datas[i].ticks * (1 << 30));
             printf("%ld: %s %.5f GBps\n", i, operations_name[k], t_bandwidth);
-            write_to_file(bandwidth, results_table_fd);
             bandwidth += t_bandwidth;
         }
         printf("\t%s %.5f GBps\n", operations_name[k], bandwidth);

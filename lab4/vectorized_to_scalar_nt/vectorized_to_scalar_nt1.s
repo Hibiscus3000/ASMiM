@@ -794,7 +794,6 @@ test:
 	call	__printf_chk@PLT
 	movl	16(%rbp), %edi
 	vmovq	%rbx, %xmm0
-	call	write_to_file
 	vmovq	%rbx, %xmm4
 	vaddsd	-208(%rbp), %xmm4, %xmm3
 	vmovq	%xmm3, %rbx

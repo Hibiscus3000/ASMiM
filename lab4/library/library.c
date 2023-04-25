@@ -1,5 +1,3 @@
-typedef long long tested;
-
 #define _GNU_SOURCE
 #define FREQ 2400000000
 #define BUF_SIZE 256

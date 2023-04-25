@@ -806,7 +806,6 @@ test:
 	call	__printf_chk@PLT
 	movl	16(%rbp), %edi
 	movsd	-200(%rbp), %xmm0
-	call	write_to_file
 	movsd	-200(%rbp), %xmm2
 	addsd	-208(%rbp), %xmm2
 	movsd	%xmm2, -200(%rbp)

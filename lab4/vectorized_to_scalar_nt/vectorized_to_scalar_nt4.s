@@ -114,7 +114,7 @@ rd:
 	vaddsd	112(%r14,%rax), %xmm2, %xmm2
 	addq	$4, %rbx
 	cmpq	%rbx, %r13
-	jne	.L8
+	jg	.L8
 .L7:
 	rdtscp
 	movl	%ecx, -68(%rbp)
@@ -210,7 +210,7 @@ wr:
 	vmovntdq	%ymm0, 96(%rcx)
 	addq	$128, %rcx
 	cmpq	%rsi, %rcx
-	jne	.L18
+	jl	.L18
 .L17:
 	rdtscp
 	movl	%ecx, 12(%rsp)
@@ -407,7 +407,7 @@ cp:
 	vmovntdq	%ymm0, 96(%rdi,%rcx)
 	addq	$128, %rcx
 	cmpq	%rsi, %rcx
-	jne	.L39
+	jl	.L39
 .L38:
 	rdtscp
 	movl	%ecx, 20(%rsp)
@@ -806,7 +806,6 @@ test:
 	call	__printf_chk@PLT
 	movl	16(%rbp), %edi
 	vmovq	%rbx, %xmm0
-	call	write_to_file
 	vmovq	%rbx, %xmm4
 	vaddsd	-208(%rbp), %xmm4, %xmm3
 	vmovq	%xmm3, %rbx

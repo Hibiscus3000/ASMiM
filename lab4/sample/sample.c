@@ -154,6 +154,7 @@ void test(long number_of_threads, long number_of_cpus, long number_of_virtual_th
         {
             thread_datas[i].barrier = &barrier;
             thread_datas[i].cpu = core_id * number_of_virtual_threads + virtual_thread_id;
+            printf("%d\n",thread_datas[i].cpu);
             thread_datas[i].test = test[k];
             thread_datas[i].array_size = array_size_per_thread;
             thread_datas[i].mem_al = mem_al;

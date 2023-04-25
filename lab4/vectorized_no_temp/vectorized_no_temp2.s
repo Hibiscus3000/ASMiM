@@ -880,7 +880,6 @@ test:
 	movq	-256(%rbp), %rax
 	movl	16(%rbp), %edi
 	vmovq	%rax, %xmm0
-	call	write_to_file
 	vmovsd	-256(%rbp), %xmm0
 	vaddsd	-200(%rbp), %xmm0, %xmm0
 	vmovsd	%xmm0, -256(%rbp)

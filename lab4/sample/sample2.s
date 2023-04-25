@@ -44,14 +44,13 @@ rd:
 	movq	%rsi, %r12
 	movl	$0, %ebx
 	movl	$0, %ebp
-	leaq	.LC0(%rip), %r14
+	leaq	.LC0(%rip), %rdx
 .L3:
 	addq	0(%r13,%rbx,8), %rdx
 	addq	8(%r13,%rbx,8), %rdx
-	movq	%r14, %rsi
 	addq	$2, %rbx
 	cmpq	%rbx, %r12
-	jne	.L3
+	jg	.L3
 .L2:
 	rdtscp
 	movl	%ecx, 4(%rsp)
@@ -131,7 +130,7 @@ wr:
 	movq	%r14, %rsi
 	addq	$2, %rbx
 	cmpq	%rbx, %r12
-	jne	.L10
+	jg	.L10
 .L9:
 	rdtscp
 	movl	%ecx, 4(%rsp)
@@ -393,7 +392,7 @@ cp:
 	movq	%r14, %rsi
 	addq	$2, %rbx
 	cmpq	%rbx, %r12
-	jne	.L43
+	jg	.L43
 .L42:
 	rdtscp
 	movq	%rax, %rbx
@@ -808,7 +807,6 @@ test:
 	call	__printf_chk@PLT
 	movl	16(%rbp), %edi
 	movsd	-200(%rbp), %xmm0
-	call	write_to_file
 	movsd	-200(%rbp), %xmm2
 	addsd	-208(%rbp), %xmm2
 	movsd	%xmm2, -200(%rbp)
