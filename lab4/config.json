@@ -1,0 +1,11 @@
+{
+  "filename": "table_clu.csv",
+  "methods_without_loop_unrolling": 3,
+  "methods_with_loop_unrolling": 6,
+  "sizes": [2000000000, 8000000000],
+  "loop_unrolling": 4,
+  "threads": 8,
+  "attempts": 5,
+  "diagrams_folder": "diagrams_clu",
+  "factor": 0.72
+}
